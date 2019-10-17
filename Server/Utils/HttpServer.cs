@@ -3,15 +3,19 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using Server.MirEnvir;
 
 namespace Server
 {
     class HttpServer : HttpService {
-       
+
+        //public static readonly Envir Envir = new Envir(), EditEnvir = new Envir();
+
         Thread thread;
 
         public HttpServer() {
-            host = Settings.HTTPIPAddress;          
+            host = Settings.HTTPIPAddress;
+            port = Settings.HTTPIPPort;
         }
 
         public void Start() {
@@ -43,6 +47,15 @@ namespace Server
                     case "/":
                         WriteResponse(response, GameLanguage.GameName);
                         break;
+
+                    case "/stats":
+                        //Envir e = new Envir();
+                        string pcount = SMain.Envir.Players.Count.ToString();
+                        string players = string.Format("Players: {0}", pcount);
+
+                        WriteResponse(response, players);
+                        break;
+
                     case "/regist":
                         string id = request.QueryString["id"].ToString();
                         string psd = request.QueryString["psd"].ToString();
@@ -61,18 +74,21 @@ namespace Server
                         int result = SMain.Envir.HTTPNewAccount(p,ip);
                         WriteResponse(response, result.ToString());
                         break;
+
                     case "/login":
                         id = request.QueryString["id"].ToString();
                         psd = request.QueryString["psd"].ToString();
                         result = SMain.Envir.HTTPLogin(id, psd);
                         WriteResponse(response, result.ToString());                        
                         break;
+
                     case "/addnamelist":
                         id = request.QueryString["id"].ToString();
                         string fileName = request.QueryString["fileName"].ToString();                   
                         addNameList(id, fileName);
                         WriteResponse(response, "true");
                         break;
+
                     default:
                         WriteResponse(response, "error");
                         break;

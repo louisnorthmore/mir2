@@ -23,6 +23,7 @@ namespace Server
 
             StartHTTPCheckBox.Checked = Settings.StartHTTPService;
             HTTPIPAddressTextBox.Text = Settings.HTTPIPAddress;
+            HTTPPortTextBox.Text = Settings.HTTPIPPort;
             HTTPTrustedIPAddressTextBox.Text = Settings.HTTPTrustedIPAddress;
 
             AccountCheckBox.Checked = Settings.AllowNewAccount;
@@ -160,14 +161,18 @@ namespace Server
         private void HTTPIPAddressTextBox_TextChanged(object sender, EventArgs e)
         {
             if (ActiveControl != sender) return;
-            ActiveControl.BackColor = !tryParseHttp() ? Color.Red : SystemColors.Window;
+            IPAddress temp;
+
+            ActiveControl.BackColor = !IPAddress.TryParse(ActiveControl.Text, out temp) ? Color.Red : SystemColors.Window;
         }
 
 
         private void HTTPTrustedIPAddressTextBox_TextChanged(object sender, EventArgs e)
         {
             if (ActiveControl != sender) return;
-            ActiveControl.BackColor = !tryParseTrustedHttp() ? Color.Red : SystemColors.Window;
+            IPAddress temp;
+
+            ActiveControl.BackColor = !IPAddress.TryParse(ActiveControl.Text, out temp) ? Color.Red : SystemColors.Window;
         }
 
         bool tryParseHttp()

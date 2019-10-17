@@ -60,10 +60,11 @@ namespace Server
                              RelogDelay = 50,
                              MaxIP = 5;
 
-        //HTTP
+        //HTTP API
         public static bool StartHTTPService = false;
-        public static string HTTPIPAddress = "http://127.0.0.1:5679/";
-        public static string HTTPTrustedIPAddress = "127.0.0.1:5679";
+        public static string HTTPIPAddress = "127.0.0.1";
+        public static string HTTPIPPort = "5679";
+        public static string HTTPTrustedIPAddress = "127.0.0.1";
 
         //Permission
         public static bool AllowNewAccount = true,

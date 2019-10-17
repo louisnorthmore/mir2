@@ -7,6 +7,7 @@ namespace Server
 {
     abstract class HttpService {
         protected string host;
+        protected string port;
         HttpListener listener;
         bool is_active = true;
 
@@ -16,10 +17,11 @@ namespace Server
         public void Listen() {
             if (!HttpListener.IsSupported) {
                 throw new System.InvalidOperationException(
-                    "To use HttpListener the operating system must be Windows XP SP2 or Server 2003 or higher.");
+                    "To use API (HttpListener) the operating system must be Windows XP SP2 or Server 2003 or higher.");
             }
-            string[] prefixes = new string[] { host };
+            string[] prefixes = new string[] { "http://" + host + ":" + port + "/" };
 
+            SMain.Enqueue("API starting on " + host + ":" + port);
             listener = new HttpListener();
             try
             {
@@ -28,11 +30,11 @@ namespace Server
                     listener.Prefixes.Add(s);
                 }
                 listener.Start();
-                SMain.Enqueue("HttpService started.");
+                SMain.Enqueue("API started.");
             }
             catch (Exception err)
             {
-                SMain.Enqueue("HttpService start failed! Error:" + err);
+                SMain.Enqueue("API start failed! Error:" + err);
                 return;
             }
          
@@ -48,11 +50,13 @@ namespace Server
                     Console.WriteLine("Connection: {0}", request.KeepAlive ? "Keep-Alive" : "close");
                     Console.WriteLine("Host: {0}", request.UserHostName);
                     HttpListenerResponse response = context.Response;
-                    if (request.UserHostAddress != Settings.HTTPTrustedIPAddress)
+
+                    if (request.UserHostAddress != Settings.HTTPTrustedIPAddress + ":" + Settings.HTTPIPPort)
                     {
-                        WriteResponse(response, "");
+                        WriteResponse(response, "Forbidden from " + request.UserHostAddress); // can we do a 403 here?
                         continue;
                     }
+
                     if (request.HttpMethod == "GET")
                     {
                         OnGetRequest(request, response);
