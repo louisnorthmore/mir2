@@ -86,7 +86,7 @@ namespace Server
             try
             {
                 response.ContentLength64 = Encoding.UTF8.GetByteCount(responseString);
-                response.ContentType = "text/html; charset=UTF-8";
+                response.ContentType = "text/json; charset=UTF-8";
             }
             finally
             {

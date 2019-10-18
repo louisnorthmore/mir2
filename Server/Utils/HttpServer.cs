@@ -4,12 +4,13 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using Server.MirEnvir;
+using Newtonsoft.Json;
 
 namespace Server
 {
     class HttpServer : HttpService {
 
-        //public static readonly Envir Envir = new Envir(), EditEnvir = new Envir();
+        
 
         Thread thread;
 
@@ -49,14 +50,85 @@ namespace Server
                         break;
 
                     case "/stats":
-                        //Envir e = new Envir();
+                        
+                        string servername = GameLanguage.GameName;
+                        string a = GameLanguage.OnlinePlayers.ToString();
+                        //string version = Server.Settings.
                         string pcount = SMain.Envir.Players.Count.ToString();
-                        string players = string.Format("Players: {0}", pcount);
+                        string mcount = SMain.Envir.MonsterCount.ToString();
+                        string acount = SMain.Envir.AccountList.Count().ToString();
+                        string ccount = SMain.Envir.CharacterList.Count.ToString();
+                        string connections = SMain.Envir.Connections.Count.ToString();
 
-                        WriteResponse(response, players);
+                        //string MirEnvir.
+
+                        var stats = new
+                        {
+                            a = a,
+                            name = servername,
+                            //version = version,
+                            accounts = acount,
+                            characters = ccount,
+                            players = pcount,
+                            connections = connections,
+                            mobs = mcount
+                        };
+
+                        var json = JsonConvert.SerializeObject(stats);
+                        WriteResponse(response, json);
                         break;
 
-                    case "/regist":
+                    case "/players":
+                        var players = SMain.Envir.Players;
+                        json = JsonConvert.SerializeObject(players, Formatting.Indented,
+                        new JsonSerializerSettings()
+                            {
+                                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                            });
+                        WriteResponse(response, json);
+                        break;
+
+                    case "/accounts":
+                        var accounts = SMain.Envir.AccountList;
+                        json = JsonConvert.SerializeObject(accounts, Formatting.Indented,
+                        new JsonSerializerSettings()
+                            {
+                                   ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                            });
+                        WriteResponse(response, json);
+                        break;
+
+                    case "/items":
+                        var items = SMain.Envir.ItemInfoList;
+                        json = JsonConvert.SerializeObject(items, Formatting.Indented,
+                        new JsonSerializerSettings()
+                            {
+                                   ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                            });
+                        WriteResponse(response, json);
+                        break;
+
+                    case "/maps":
+                        var maps = SMain.Envir.MapList;
+                        json = JsonConvert.SerializeObject(maps, Formatting.Indented,
+                        new JsonSerializerSettings()
+                        {
+                            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                        });
+                        WriteResponse(response, json);
+                        break;
+
+                    case "/magic":
+                        var magic = SMain.Envir.MagicInfoList;
+                        json = JsonConvert.SerializeObject(magic, Formatting.Indented,
+                        new JsonSerializerSettings()
+                        {
+                            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                        });
+                        WriteResponse(response, json);
+                        break;
+
+                    case "/register":
                         string id = request.QueryString["id"].ToString();
                         string psd = request.QueryString["psd"].ToString();
                         string email = request.QueryString["email"].ToString();
@@ -64,6 +136,8 @@ namespace Server
                         string question = request.QueryString["question"].ToString();
                         string answer = request.QueryString["answer"].ToString();
                         string ip = request.QueryString["ip"].ToString();
+
+
                         ClientPackets.NewAccount p = new ClientPackets.NewAccount();
                         p.AccountID = id;
                         p.Password = psd;

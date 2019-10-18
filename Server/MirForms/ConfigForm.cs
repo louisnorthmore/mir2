@@ -23,7 +23,7 @@ namespace Server
 
             StartHTTPCheckBox.Checked = Settings.StartHTTPService;
             HTTPIPAddressTextBox.Text = Settings.HTTPIPAddress;
-            HTTPPortTextBox.Text = Settings.HTTPIPPort;
+            HTTPPortTextBox.Text = Settings.HTTPIPPort.ToString();
             HTTPTrustedIPAddressTextBox.Text = Settings.HTTPTrustedIPAddress;
 
             AccountCheckBox.Checked = Settings.AllowNewAccount;
@@ -76,6 +76,9 @@ namespace Server
 
             ushort tempshort;
             int tempint;
+
+
+            Settings.HTTPIPPort = HTTPPortTextBox.Text.ToString();
 
             if (ushort.TryParse(PortTextBox.Text, out tempshort))
                 Settings.Port = tempshort;
