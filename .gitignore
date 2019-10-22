@@ -60,3 +60,4 @@ Client/Client.csproj
 Daneo1989_Server.rar
 packages/
 Server/packages.config
+patch.diff

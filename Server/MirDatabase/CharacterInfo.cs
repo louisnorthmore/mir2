@@ -640,7 +640,15 @@ namespace Server.MirDatabase
 
         public UserItem[] Slots
         {
-            get { return Player.Info.Equipment[(int)EquipmentSlot.Mount].Slots; }
+            get {
+                try
+                {
+                    return Player.Info.Equipment[(int)EquipmentSlot.Mount].Slots;
+                } catch (Exception e) {
+                    return new UserItem[5];
+                }
+            }
+
         }
 
 
