@@ -12,6 +12,16 @@ namespace Server.MirEnvir
 {
     public class Reporting
     {
+        protected static Envir Envir
+        {
+            get { return Envir.Main; }
+        }
+
+        protected static MessageQueue MessageQueue
+        {
+            get { return MessageQueue.Instance; }
+        }
+
         public PlayerObject Player;
         public List<Action> Actions = new List<Action>();
 
@@ -39,7 +49,7 @@ namespace Server.MirEnvir
         {
             Player = player;
 
-            string baseDir = @Settings.ReportPath + player.Name + "_player";
+            string baseDir = Path.Combine(Settings.ReportPath, player.Name + "_player");
 
             try
             {
@@ -55,7 +65,7 @@ namespace Server.MirEnvir
                 // Get the line number from the stack frame
                 var line = frame.GetFileLineNumber();
 
-                SMain.Enqueue("Could not save player reporting");
+                MessageQueue.Enqueue("Could not save player reporting");
                 File.AppendAllText(Settings.ErrorPath + "Error.txt",
                 string.Format("[{0}] {1} at line {2}{3}", DateTime.Now, ex, line, Environment.NewLine));
             }
@@ -300,7 +310,7 @@ namespace Server.MirEnvir
         {
             if (!DoLog || Player.Info == null) return;
 
-            action.Time = SMain.Envir.Now;
+            action.Time = Envir.Now;
             action.Player = Player.Name;
 
             Actions.Add(action);
@@ -313,8 +323,8 @@ namespace Server.MirEnvir
         {
             if (!DoLog || Actions.Count < 1) return;
 
-            string filename = SMain.Envir.Now.Date.ToString(@"yyyy-MM-dd");
-            string fullPath = _baseDir + @"\" + filename + ".txt";
+            string filename = Envir.Now.Date.ToString(@"yyyy-MM-dd");
+            string fullPath = Path.Combine(_baseDir, filename + ".txt");
 
             try
             {
@@ -330,7 +340,7 @@ namespace Server.MirEnvir
                 // Get the line number from the stack frame
                 var line = frame.GetFileLineNumber();
 
-                SMain.Enqueue("Could not save player reporting");
+                MessageQueue.Enqueue("Could not save player reporting");
                 File.AppendAllText(Settings.ErrorPath + "Error.txt",
                 string.Format("[{0}] {1} at line {2}{3}", DateTime.Now, ex, line, Environment.NewLine));
                 return;
@@ -356,7 +366,7 @@ namespace Server.MirEnvir
                     // Get the line number from the stack frame
                     var line = frame.GetFileLineNumber();
 
-                    SMain.Enqueue("Could not save player reporting");
+                    MessageQueue.Enqueue("Could not save player reporting");
                     File.AppendAllText(Settings.ErrorPath + "Error.txt",
                     string.Format("[{0}] {1} at line {2}{3}", DateTime.Now, ex, line, Environment.NewLine));
                     break;
