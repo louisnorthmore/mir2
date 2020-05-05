@@ -2513,7 +2513,7 @@ namespace Client.MirScenes
 
             User = null;
             if (Settings.Resolution != 800)
-                CMain.SetResolution(800, 600);
+                CMain.SetResolution(1366, 768); //TODO shouldnt be a static value - should grab from settings
             ActiveScene = new SelectScene(p.Characters);
 
             Dispose();

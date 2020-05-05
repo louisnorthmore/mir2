@@ -417,8 +417,9 @@ namespace Client.MirScenes
 
             if (p.Resolution < 1024 || Settings.Resolution < 1024) Settings.Resolution = 800;
             else if (p.Resolution < 1366 || Settings.Resolution < 1280) Settings.Resolution = 1024;
-            else if (p.Resolution < 1366 || Settings.Resolution < 1366) Settings.Resolution = 1280;//not adding an extra setting for 1280 on server cause well it just depends on the aspect ratio of your screen
-            else if (p.Resolution >= 1366 && Settings.Resolution >= 1366) Settings.Resolution = 1366;
+            else if (p.Resolution == 1280 || Settings.Resolution == 1280) Settings.Resolution = 1280;
+            else if (p.Resolution == 1366 && Settings.Resolution == 1366) Settings.Resolution = 1366;
+            else if (p.Resolution >= 1920 && Settings.Resolution >= 1920) Settings.Resolution = 1920;
 
             switch (p.Result)
             {
@@ -435,12 +436,17 @@ namespace Client.MirScenes
                     MirMessageBox.Show("No active map and/or start point found.");
                     break;
                 case 4:
+                    
                     if (Settings.Resolution == 1024)
                         CMain.SetResolution(1024, 768);
                     else if (Settings.Resolution == 1280)
                         CMain.SetResolution(1280, 800);
                     else if (Settings.Resolution == 1366)
                         CMain.SetResolution(1366, 768);
+                    else if (Settings.Resolution == 1920)
+                        //CMain.SetResolution(1366, 768); // let's have the char select screen slightly smaller.
+               
+                        CMain.SetResolution(1920, 1080);
                     ActiveScene = new GameScene();
                     Dispose();
                     break;
